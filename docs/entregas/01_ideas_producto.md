@@ -1,144 +1,55 @@
-# Entrega 2 - Selección de idea de proyecto y análisis de datos necesarios
+# Entrega 01 - Ideas de producto
 
-## 1. Idea seleccionada
+## 1. Sistema Inteligente de Seguimiento y Automatización de Ventas para consultoras de belleza
 
-### Problema que resuelve
+### Problema o necesidad que aborda
 
-El proyecto seleccionado consiste en desarrollar un Sistema Inteligente para la Predicción de Recompras y Automatización del Seguimiento Comercial dirigido a consultoras de belleza. Actualmente, muchas consultoras gestionan la información de sus clientes mediante listas de contactos, hojas de cálculo o aplicaciones de mensajería, lo que dificulta realizar un seguimiento adecuado de las compras, identificar oportunidades de venta y mantener una comunicación personalizada con cada cliente. Esta situación genera pérdida de oportunidades comerciales, disminuye la fidelización y hace que gran parte de las decisiones se basen únicamente en la experiencia personal y no en el análisis de datos.
+Muchas consultoras de belleza realizan el seguimiento de sus clientes de forma manual, lo que dificulta recordar fechas de recompra, identificar intereses específicos y mantener una comunicación constante con cada cliente. Esto puede generar pérdida de ventas, poca fidelización y desaprovechamiento de oportunidades comerciales.
 
-### Solución planteada
+### Por qué puede tener impacto o valor
 
-La propuesta consiste en desarrollar una plataforma que centralice la información de los clientes y utilice técnicas de Ciencia de Datos para analizar su comportamiento de compra. El sistema permitirá almacenar información de cada cliente, registrar compras e interacciones, segmentar clientes según sus características y construir un modelo predictivo capaz de estimar la probabilidad de recompra. Con esta información será posible generar recomendaciones y recordatorios personalizados, facilitando la toma de decisiones comerciales basadas en datos.
+Este proyecto propone desarrollar un sistema que registre información de cada cliente, como edad, preferencias, productos de interés, historial de compras y datos de contacto, para automatizar recordatorios y promociones personalizadas.
 
-### MVP del proyecto final
+Por ejemplo, si una clienta compra una base cuya duración estimada es de cuatro meses, el sistema podrá enviar un recordatorio automático en el momento adecuado para sugerir una nueva compra. También permitirá activar campañas segmentadas según el tipo de producto que cada cliente consume o manifestó interés en adquirir.
 
-El Producto Mínimo Viable consistirá en una aplicación web capaz de registrar clientes, almacenar el historial de compras, visualizar indicadores comerciales mediante un dashboard interactivo y ejecutar un modelo predictivo que estime qué clientes tienen mayor probabilidad de realizar una nueva compra. El sistema permitirá además generar recomendaciones de seguimiento comercial y estará diseñado para incorporar nuevos clientes y transacciones de forma continua, mejorando progresivamente el rendimiento de los modelos conforme aumente el volumen de información disponible.
+El valor principal está en que mejora la gestión comercial, aumenta la probabilidad de recompra y optimiza el tiempo de trabajo de las consultoras al reducir tareas repetitivas.
 
----
+### Qué me motiva personalmente a trabajar en ella
 
-# 2. Datos necesarios
+Me motiva porque responde a una necesidad real en el trabajo de ventas personalizadas, donde muchas veces el éxito depende del seguimiento oportuno y de conocer bien al cliente.
 
-Para desarrollar el proyecto será necesario trabajar con información relacionada con clientes, productos e historial de compras.
+## 2. Asistente Inteligente para el Acompañamiento de la Maternidad y el Cuidado del Bebé
 
-Las principales variables consideradas son:
+### Problema o necesidad que aborda
 
-## Información del cliente
+Muchas madres, especialmente aquellas que no cuentan con una red de apoyo cercana o viven en condición de migración, enfrentan dificultades para organizar rutinas de sueño, alimentación, lactancia, alimentación complementaria y cuidado diario del bebé, además de atender su propio bienestar físico y emocional.
 
-- Identificador del cliente
-- Nombre (anonimizado para el proyecto)
-- Edad (cuando esté disponible)
-- Ciudad
-- Número telefónico (anonimizado)
-- Tipo de piel
-- Tono de base
-- Fecha de registro
+### Por qué puede tener impacto o valor
 
-## Información comercial
+Este proyecto propone crear un sistema inteligente que funcione como asistente personalizado para el cuidado materno-infantil. La herramienta podría registrar rutinas del bebé, horarios de alimentación, sueño, crecimiento y otros aspectos importantes, generando recomendaciones adaptadas a cada caso.
 
-- Fecha de compra
-- Producto adquirido
-- Categoría del producto
-- Valor de la compra
-- Cantidad comprada
-- Método de pago
-- Estado del pedido
+También podría incluir orientación sobre el cuidado de la madre, recordatorios, alertas y respuestas guiadas ante dudas frecuentes, convirtiéndose en un apoyo integral en una etapa donde la información confiable y organizada es fundamental.
 
-## Información de seguimiento
+El valor del proyecto está en reducir la carga mental, brindar acompañamiento personalizado y facilitar la toma de decisiones cotidianas en el hogar.
 
-- Fecha del último contacto
-- Medio de contacto
-- Respuesta a promociones
-- Productos de interés
-- Observaciones
+### Qué me motiva personalmente a trabajar en ella
 
-## Variables derivadas
+Me motiva porque es un tema con alto impacto humano y social. Considero que muchas veces la maternidad se vive con incertidumbre y exceso de información dispersa, por lo que una herramienta tecnológica bien diseñada podría ser de gran ayuda. Además, me interesa la posibilidad de aplicar inteligencia artificial en soluciones centradas en el bienestar y la vida diaria.
 
-Durante el análisis también se calcularán variables como:
+También existe una motivación personal importante, ya que soy madre migrante y he vivido la maternidad sin una red de apoyo cercana, enfrentando muchos momentos de duda, sobrecarga emocional y la necesidad constante de buscar orientación confiable. Esta experiencia me permitió comprender de manera directa las dificultades que muchas mujeres atraviesan en procesos similares, incluyendo situaciones de salud emocional como la depresión posparto, donde el acompañamiento oportuno puede marcar una gran diferencia. Por ello, considero valioso desarrollar una solución tecnológica que pueda brindar apoyo, organización y acompañamiento a otras madres en contextos similares.
 
-- Número total de compras
-- Frecuencia de compra
-- Tiempo desde la última compra
-- Valor acumulado de compras
-- Ticket promedio
-- Probabilidad estimada de recompra
+## 3. Aplicación Inteligente para la Gestión del Transporte Urbano en Manizales
 
-### Granularidad
+### Problema o necesidad que aborda
 
-La unidad de análisis será la transacción de compra. Cada compra realizada por un cliente constituirá un registro independiente, permitiendo reconstruir el historial completo de cada cliente.
+En muchas ciudades, incluido Manizales, los usuarios del transporte público no cuentan con información precisa sobre horarios reales, retrasos, cambios de ruta o cancelaciones. Esto genera tiempos de espera innecesarios, incertidumbre y dificultades para planificar desplazamientos diarios.
 
-### Profundidad histórica
+### Por qué puede tener impacto o valor
 
-Inicialmente se utilizará la información histórica disponible de clientes y posteriormente la base de datos crecerá de manera continua incorporando nuevos clientes, compras e interacciones registradas durante el desarrollo del proyecto.
+La propuesta consiste en desarrollar una aplicación que centralice la información de las diferentes empresas transportadoras y permita consultar en tiempo real cuánto falta para que llegue una ruta, si existen retrasos, cierres viales o cambios temporales en el recorrido.
 
-### Volumen esperado
+Además, podría incluir alertas personalizadas para usuarios suscritos a determinadas rutas y notificaciones cuando existan novedades relevantes en su trayecto habitual. Esto mejoraría significativamente la experiencia del usuario, optimizaría el tiempo de desplazamiento y podría contribuir a una movilidad urbana más organizada.
 
-Actualmente se dispone de una base inicial de varios cientos de clientes reales. A medida que avance el proyecto se espera ampliar el conjunto de datos mediante nuevos registros y datos históricos de ventas, alcanzando un volumen suficiente para aplicar técnicas de segmentación y modelos predictivos.
+### Qué me motiva personalmente a trabajar en ella
 
-### Datos imprescindibles
-
-- Identificador del cliente
-- Fecha de compra
-- Producto comprado
-- Valor de la compra
-
-### Datos deseables
-
-- Edad
-- Ciudad
-- Tipo de piel
-- Preferencias
-- Historial de interacciones
-- Respuesta a campañas comerciales
-
----
-
-# 3. Fuentes de datos previstas
-
-La principal fuente de información será una base de datos propia obtenida durante la actividad comercial de una consultora independiente de productos de belleza.
-
-Actualmente se dispone de:
-
-- Base de clientes.
-- Información de contacto.
-- Características del cliente (tipo de piel, tono de base, entre otras).
-- Registros comerciales que servirán como punto de partida para construir el histórico de compras.
-
-Durante el proyecto esta información será enriquecida mediante el registro continuo de nuevas ventas e interacciones.
-
-Además, podrán utilizarse conjuntos de datos públicos relacionados con ventas minoristas para validar técnicas de análisis o comparar resultados, siempre que sean compatibles con el objetivo del proyecto.
-
-Los datos serán almacenados inicialmente en formato Excel y CSV y posteriormente migrados a una base de datos relacional para facilitar su gestión.
-
-### Riesgos identificados
-
-- Algunos registros históricos pueden estar incompletos.
-- Parte de las compras antiguas podrían no estar digitalizadas.
-- Será necesario realizar procesos de limpieza y normalización de los datos.
-- El modelo predictivo requerirá suficiente histórico de compras para alcanzar un buen rendimiento.
-
----
-
-# 4. Consideraciones de privacidad y protección de datos
-
-El proyecto utilizará información correspondiente a clientes reales, por lo que se adoptarán medidas para garantizar la protección de datos personales.
-
-En la versión académica:
-
-- Los nombres serán anonimizados.
-- Los números telefónicos serán eliminados o sustituidos por identificadores internos.
-- No se publicará información que permita identificar personas.
-- El repositorio únicamente contendrá datos anonimizados o sintéticos cuando sea necesario.
-
-El tratamiento de la información tendrá exclusivamente fines académicos y de investigación.
-
----
-
-# 5. Viabilidad inicial del proyecto
-
-La viabilidad del proyecto se considera alta, ya que se dispone de una base inicial de clientes reales que permitirá comenzar el desarrollo sin depender exclusivamente de fuentes externas.
-
-La calidad de los datos deberá mejorarse mediante procesos de limpieza, normalización y enriquecimiento progresivo conforme se registren nuevas compras e interacciones. Este crecimiento continuo constituye una de las principales fortalezas del proyecto, ya que permitirá que los modelos predictivos mejoren su capacidad conforme aumente el volumen de información disponible.
-
-El principal riesgo identificado es la limitada disponibilidad de un histórico amplio de compras durante las primeras etapas del desarrollo. Como alternativa, se contempla complementar el entrenamiento inicial mediante datos simulados o conjuntos de datos públicos de ventas, siempre diferenciándolos claramente de la información real utilizada en el sistema.
-
-En conjunto, el proyecto resulta viable desde el punto de vista técnico y de disponibilidad de datos, y puede desarrollarse de manera realista durante el curso, incorporando nuevas funcionalidades y mejorando sus modelos de forma incremental.
+Me motiva porque es un problema cotidiano que afecta a muchas personas todos los días. Considero que la tecnología puede aportar soluciones prácticas a situaciones urbanas comunes y mejorar la calidad de vida de la ciudadanía. También me interesa el impacto social que puede tener un proyecto de este tipo en una ciudad.
