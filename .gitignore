@@ -1,0 +1,30 @@
+# Entorno virtual
+.venv/
+
+# Datos originales con información personal
+data/raw/
+
+# Datos procesados con información personal
+data/processed/clientes_privados.csv
+
+# Bases de datos locales
+*.db
+*.sqlite
+*.sqlite3
+
+# Archivos temporales de Python
+__pycache__/
+*.py[cod]
+
+# Configuración local
+.env
+
+# Archivos de Streamlit
+.streamlit/secrets.toml
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
