@@ -1,15 +1,14 @@
 import sys
-from pathlib import Path
-
 import streamlit as st
 import pandas as pd
+from pathlib import Path
 
 # Permite importar módulos desde la carpeta raíz del proyecto
 RAIZ_PROYECTO = Path(__file__).resolve().parent.parent
 
 if str(RAIZ_PROYECTO) not in sys.path:
     sys.path.append(str(RAIZ_PROYECTO))
-
+    
 from src.database import (
     inicializar_base_datos,
     agregar_cliente,
@@ -23,6 +22,8 @@ from src.database import (
 
 from src.asistente import analizar_perfil
 
+
+
 # ============================================================
 # CONFIGURACIÓN
 # ============================================================
@@ -33,7 +34,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded",
 )
-
 
 # ============================================================
 # ESTILOS
@@ -213,26 +213,39 @@ df["celular"] = df["celular"].apply(
 )
 
 # ============================================================
-# TÍTULO
+# ENCABEZADO
 # ============================================================
 
-st.title("CRM Inteligente para Consultoras de Belleza")
+col_titulo, col_busqueda = st.columns([2.5, 1])
 
-st.write("Gestión de clientes, perfiles y seguimiento comercial.")
-
-
-# ============================================================
-# SIDEBAR
-# ============================================================
-
-with st.sidebar:
-
-    st.markdown("## 💄 CRM Inteligente")
-
+with col_titulo:
+    st.markdown(
+        "## 💄CRM Inteligente para Consultoras de Belleza"
+    )
+    st.caption(
+        "Gestión y seguimiento inteligente de clientes"
+    )
     st.divider()
 
+
+# ============================================================
+# ESTRUCTURA PRINCIPAL
+# ============================================================
+
+col_navegacion, col_principal, col_ficha = st.columns(
+     [0.7, 3.7, 1.5],
+    gap="large"
+)
+
+
+# ============================================================
+# NAVEGACIÓN
+# ============================================================
+
+with col_navegacion:
+
     opcion = st.radio(
-        "Navegación",
+        "",
         [
             "Inicio",
             "Clientes",
@@ -242,923 +255,677 @@ with st.sidebar:
         ],
     )
 
-    st.divider()
-
-    st.caption("MVP · Datos anonimizados")
-
-
 # ============================================================
-# PÁGINA INICIO
+# CONTENIDO PRINCIPAL
 # ============================================================
 
 if opcion == "Inicio":
 
-    col1, col2, col3, col4, col5 = st.columns(5)
+    with col_principal:
 
-    total_clientes = len(df)
-
-    # ---------------------------------------------------------
-    # COMPLETITUD REAL DEL PERFIL
-    # ---------------------------------------------------------
-
-    campos_completitud = [
-        "tipo_piel",
-        "tono_base",
-        "ciudad"
-    ]
-
-    datos_completitud = (
-        df[campos_completitud]
-        .fillna("")
-        .astype(str)
-        .apply(lambda columna: columna.str.strip())
-    )
-
-    perfiles_completos = (
-        datos_completitud
-        .ne("")
-        .all(axis=1)
-        .sum()
-    )
-
-    clientes_incompletos = (
-        total_clientes - perfiles_completos
-    )
-
-    porcentaje_completos = (
-    round(perfiles_completos / total_clientes * 100, 1)
-    if total_clientes > 0
-    else 0
-    )
-
-    porcentaje_incompletos = (
-        round(clientes_incompletos / total_clientes * 100, 1)
-        if total_clientes > 0
-        else 0
-    )
-    # ---------------------------------------------------------
-    # DISTRIBUCIONES
-    # ---------------------------------------------------------
-
-    ciudades = (
-        df["ciudad"]
-        .fillna("")
-        .astype(str)
-        .str.strip()
-    )
-
-    ciudades = ciudades[
-        ciudades != ""
-    ].nunique()
-
-    tipos_piel = (
-        df["tipo_piel"]
-        .fillna("")
-        .astype(str)
-        .str.strip()
-    )
-
-    tipos_piel = tipos_piel[
-        tipos_piel != ""
-    ].nunique()
-    
-# =========================
-# TARJETAS KPI
-# =========================
-
-    with col1:
-        
-        st.markdown(
-            f"""
-            <div class="kpi-card kpi-clientes">
-                <div class="kpi-icon">👥</div>
-                <div class="kpi-title">Clientes registrados</div>
-                <div class="kpi-value">{total_clientes}</div>
-                <div class="kpi-subtitle">Base actual de clientes</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col2:
-        st.markdown(
-            f"""
-            <div class="kpi-card kpi-completos">
-                <div class="kpi-icon">👤</div>
-                <div class="kpi-title">Perfiles completos</div>
-                <div class="kpi-value">{perfiles_completos}</div>
-                <div class="kpi-subtitle">{porcentaje_completos}% del total</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col3:
-        st.markdown(
-            f"""
-            <div class="kpi-card kpi-ciudades">
-                <div class="kpi-icon">📍</div>
-                <div class="kpi-title">Ciudades</div>
-                <div class="kpi-value">{ciudades}</div>
-                 <div class="kpi-subtitle">Ciudades registradas</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col4:
-        st.markdown(
-            f"""
-            <div class="kpi-card kpi-piel">
-                <div class="kpi-icon">🧴</div>
-                <div class="kpi-title">Tipos de piel</div>
-                <div class="kpi-value">{tipos_piel}</div>
-                <div class="kpi-subtitle">Categorías registradas</div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
-
-    with col5:
-
-      st.markdown(
-          f"""
-          <div class="kpi-card kpi-incompletos">
-              <div class="kpi-icon">⚠️</div>
-              <div class="kpi-title">Información incompleta</div>
-              <div class="kpi-value">{clientes_incompletos}</div>
-              <div class="kpi-subtitle">{porcentaje_incompletos}% del total</div>
-          </div>
-          """,
-          unsafe_allow_html=True,
+      col1, col2, col3, col4, col5 = st.columns(5)
+      total_clientes = len(df)
+      
+      campos_completitud = ["tipo_piel","tono_base","ciudad"]
+      
+      datos_completitud = (
+              df[campos_completitud]
+              .fillna("")
+              .astype(str)
+              .apply(lambda columna: columna.str.strip())
+          )
+      
+      perfiles_completos = (
+          datos_completitud
+          .ne("")
+          .all(axis=1)
+          .sum()
       )
-    
-    st.markdown(
-    "<div style='height: 18px;'></div>",
-    unsafe_allow_html=True
-    )
-    
-    if clientes_incompletos > 0:
-
-      st.warning(
-          f"{clientes_incompletos} clientes tienen "
-          "información incompleta. "
-          "Puedes revisar sus perfiles para "
-          "completar los datos disponibles."
+  
+      clientes_incompletos = (total_clientes - perfiles_completos)
+  
+      porcentaje_completos = (
+      round(perfiles_completos / total_clientes * 100, 1)
+      if total_clientes > 0
+      else 0
       )
-    st.markdown(
-    "<div style='height: 28px;'></div>",
-    unsafe_allow_html=True
-    )
-    
+  
+      porcentaje_incompletos = (
+          round(clientes_incompletos / total_clientes * 100, 1)
+          if total_clientes > 0
+          else 0
+      )
+# ---------------------------------------------------------
+# DISTRIBUCIONES
+# ---------------------------------------------------------
 
-    st.divider()
+      ciudades = (
+          df["ciudad"]
+          .fillna("")
+          .astype(str)
+          .str.strip()
+      )
+  
+      ciudades = ciudades[ciudades != ""].nunique()
+  
+      tipos_piel = (
+          df["tipo_piel"]
+          .fillna("")
+          .astype(str)
+          .str.strip()
+      )
+  
+      tipos_piel = tipos_piel[tipos_piel != ""].nunique()
+      
+  # =========================
+  # TARJETAS KPI
+  # =========================
+  
+      with col1:
+          
+          st.markdown(
+              f"""
+              <div class="kpi-card kpi-clientes">
+                  <div class="kpi-icon">👥</div>
+                  <div class="kpi-title">Clientes registrados</div>
+                  <div class="kpi-value">{total_clientes}</div>
+                  <div class="kpi-subtitle">Base actual de clientes</div>
+              </div>
+              """,
+              unsafe_allow_html=True,
+          )
+  
+      with col2:
+          st.markdown(
+              f"""
+              <div class="kpi-card kpi-completos">
+                  <div class="kpi-icon">👤</div>
+                  <div class="kpi-title">Perfiles completos</div>
+                  <div class="kpi-value">{perfiles_completos}</div>
+                  <div class="kpi-subtitle">{porcentaje_completos}% del total</div>
+              </div>
+              """,
+              unsafe_allow_html=True,
+          )
+  
+      with col3:
+          st.markdown(
+              f"""
+              <div class="kpi-card kpi-ciudades">
+                  <div class="kpi-icon">📍</div>
+                  <div class="kpi-title">Ciudades</div>
+                  <div class="kpi-value">{ciudades}</div>
+                    <div class="kpi-subtitle">Ciudades registradas</div>
+              </div>
+              """,
+              unsafe_allow_html=True,
+          )
+  
+      with col4:
+          st.markdown(
+              f"""
+              <div class="kpi-card kpi-piel">
+                  <div class="kpi-icon">🧴</div>
+                  <div class="kpi-title">Tipos de piel</div>
+                  <div class="kpi-value">{tipos_piel}</div>
+                  <div class="kpi-subtitle">Categorías registradas</div>
+              </div>
+              """,
+              unsafe_allow_html=True,
+          )
+  
+      with col5:
+  
+        st.markdown(
+            f"""
+            <div class="kpi-card kpi-incompletos">
+                <div class="kpi-icon">⚠️</div>
+                <div class="kpi-title">Información incompleta</div>
+                <div class="kpi-value">{clientes_incompletos}</div>
+                <div class="kpi-subtitle">{porcentaje_incompletos}% del total</div>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
+      
+      st.divider()
+      
+      st.subheader("Clientes")
+ 
+# --------------------------------------------------------
+# BÚSQUEDA
+# --------------------------------------------------------
 
-    st.subheader("Clientes")
+      texto_busqueda = st.text_input(
+          "Buscar cliente",
+          placeholder="Ej. Laura ...",
+      )
 
-    # --------------------------------------------------------
-    # BÚSQUEDA
-    # --------------------------------------------------------
+      df_filtrado = df.copy()
 
-    texto_busqueda = st.text_input(
-        "Buscar cliente",
-        placeholder="Ej. Laura ...",
-    )
-
-    df_filtrado = df.copy()
-
-    if texto_busqueda:
-        df_filtrado = df_filtrado[
-            df_filtrado["nombre"].str.contains(
+      if texto_busqueda:
+          df_filtrado = df_filtrado[
+              df_filtrado["nombre"].str.contains(
                 texto_busqueda,
                 case=False,
                 na=False,
-            )
-        ]
-
-    # --------------------------------------------------------
-    # FILTROS
-    # --------------------------------------------------------
-
-    col1, col2, col3 = st.columns(3)
-
-    with col1:
-        tipos = ["Todos"] + sorted(df["tipo_piel"].dropna().unique().tolist())
-
-        filtro_piel = st.selectbox(
-            "Tipo de piel",
-            tipos,
-        )
-
-    with col2:
-        tonos = ["Todos"] + sorted(df["tono_base"].dropna().unique().tolist())
-
-        filtro_tono = st.selectbox(
-            "Tono de base",
-            tonos,
-        )
-
-    with col3:
-        ciudades_lista = ["Todas"] + sorted(df["ciudad"].dropna().unique().tolist())
-
-        filtro_ciudad = st.selectbox(
-            "Ciudad",
-            ciudades_lista,
-        )
-
-    if filtro_piel != "Todos":
-        df_filtrado = df_filtrado[df_filtrado["tipo_piel"] == filtro_piel]
-
-    if filtro_tono != "Todos":
-        df_filtrado = df_filtrado[df_filtrado["tono_base"] == filtro_tono]
-
-    if filtro_ciudad != "Todas":
-        df_filtrado = df_filtrado[df_filtrado["ciudad"] == filtro_ciudad]
-
-
-    # --------------------------------------------------------
-    # TABLA + FICHA LATERAL
-    # --------------------------------------------------------
-
-    col_tabla, col_ficha = st.columns(
-        [2.1, 1],
-        gap="large"
-    )
-
-    # ========================================================
-    # TABLA DE CLIENTES
-    # ========================================================
-
-    with col_tabla:
-
-        st.caption(
-            f"Mostrando {len(df_filtrado)} clientes"
-        )
-
-        if len(df_filtrado) > 0:
-
-            clientes_por_pagina = 10
-
-            total_paginas = max(
-                1,
-                (len(df_filtrado) - 1)
-                // clientes_por_pagina + 1
-            )
-
-            if "pagina_clientes" not in st.session_state:
-                st.session_state.pagina_clientes = 1
-
-            if (
-                st.session_state.pagina_clientes
-                > total_paginas
-            ):
-                st.session_state.pagina_clientes = (
-                    total_paginas
-                )
-
-            pagina_actual = (
-                st.session_state.pagina_clientes
-            )
-
-            inicio = (
-                pagina_actual - 1
-            ) * clientes_por_pagina
-
-            fin = inicio + clientes_por_pagina
-
-            df_pagina = df_filtrado.iloc[inicio:fin]
-
-            # ------------------------------------------------
-            # ENCABEZADOS
-            # ------------------------------------------------
-
-            columnas_tabla = st.columns(
-                [1.3, 2.3, 1.7, 1.7, 1.7, 1.7, 1.2]
-            )
-
-            encabezados = [
-                "ID",
-                "Nombre",
-                "Celular",
-                "Tipo de piel",
-                "Tono de base",
-                "Ciudad",
-                "Acción"
+              )
             ]
+          
+# --------------------------------------------------------
+# FILTROS
+# --------------------------------------------------------
 
-            for columna, encabezado in zip(
-                columnas_tabla,
-                encabezados
-            ):
+      col1, col2, col3 = st.columns(3)
 
-                columna.markdown(
-                    f"**{encabezado}**"
-                )
+      with col1:
+          
+          tipos = ["Todos"] + sorted(df["tipo_piel"].dropna().unique().tolist())
+          filtro_piel = st.selectbox("Tipo de piel",tipos,)
 
-            st.divider()
+      with col2:
+          
+          tonos = ["Todos"] + sorted(df["tono_base"].dropna().unique().tolist())
+          filtro_tono = st.selectbox("Tono de base",tonos,)
 
-            # ------------------------------------------------
-            # FILAS
-            # ------------------------------------------------
+      with col3:
+        
+          ciudades_lista = ["Todas"] + sorted(df["ciudad"].dropna().unique().tolist())
+          filtro_ciudad = st.selectbox("Ciudad",ciudades_lista,)
 
-            for _, fila in df_pagina.iterrows():
+      if filtro_piel != "Todos":
+          df_filtrado = df_filtrado[df_filtrado["tipo_piel"] == filtro_piel]
 
-                columnas = st.columns(
-                    [
-                        1.3,
-                        2.3,
-                        1.7,
-                        1.7,
-                        1.7,
-                        1.7,
-                        1.2
-                    ]
-                )
+      if filtro_tono != "Todos":
+          df_filtrado = df_filtrado[df_filtrado["tono_base"] == filtro_tono]
 
-                cliente_id = fila["cliente_id"]
+      if filtro_ciudad != "Todas":
+          df_filtrado = df_filtrado[df_filtrado["ciudad"] == filtro_ciudad]
+         
+# ========================================================
+# TABLA DE CLIENTES
+# ========================================================
 
-                nombre = (
-                    "Sin nombre"
-                    if pd.isna(fila["nombre"])
-                    else str(fila["nombre"])
-                )
+      st.caption(
+              f"Mostrando {len(df_filtrado)} clientes"
+          )
 
-                celular = (
-                    "Sin información"
-                    if pd.isna(fila["celular"])
-                    else str(fila["celular"])
-                )
+      if len(df_filtrado) > 0:
 
-                tipo_piel = (
-                    "Sin información"
-                    if pd.isna(fila["tipo_piel"])
-                    else str(fila["tipo_piel"])
-                )
+          clientes_por_pagina = 10
 
-                tono_base = (
-                    "Sin información"
-                    if pd.isna(fila["tono_base"])
-                    else str(fila["tono_base"])
-                )
+          total_paginas = max(1,(len(df_filtrado) - 1)// clientes_por_pagina + 1)
 
-                ciudad = (
-                    "Sin información"
-                    if pd.isna(fila["ciudad"])
-                    else str(fila["ciudad"])
-                )
+          if "pagina_clientes" not in st.session_state:
+              st.session_state.pagina_clientes = 1
 
-                columnas[0].write(cliente_id)
-                columnas[1].write(nombre)
-                columnas[2].write(celular)
-                columnas[3].write(tipo_piel)
-                columnas[4].write(tono_base)
-                columnas[5].write(ciudad)
-
-                if columnas[6].button(
-                    "Ver ficha",
-                    key=f"ver_{cliente_id}"
-                ):
-
-                    st.session_state[
-                        "cliente_seleccionado_id"
-                    ] = cliente_id
-
-                    st.rerun()
-
-                st.divider()
-
-            # ------------------------------------------------
-            # PAGINACIÓN
-            # ------------------------------------------------
-
-            col_anterior, col_pagina, col_siguiente = (
-                st.columns([1, 2, 1])
+          if (
+            st.session_state.pagina_clientes
+              > total_paginas
+          ):
+            st.session_state.pagina_clientes = (
+              total_paginas
             )
 
-            with col_anterior:
+          pagina_actual = (
+              st.session_state.pagina_clientes
+          )
 
-                if st.button(
-                    "← Anterior",
-                    disabled=pagina_actual <= 1,
-                    key="pagina_anterior"
-                ):
+          inicio = (pagina_actual - 1) * clientes_por_pagina
 
-                    st.session_state.pagina_clientes -= 1
-                    st.rerun()
+          fin = inicio + clientes_por_pagina
 
-            with col_pagina:
+          df_pagina = df_filtrado.iloc[inicio:fin]
 
-                st.markdown(
-                    f"""
-                    <div style="text-align:center;">
-                        Página {pagina_actual}
-                        de {total_paginas}
-                    </div>
-                    """,
-                    unsafe_allow_html=True
-                )
+# ------------------------------------------------
+# ENCABEZADOS
+# ------------------------------------------------
 
-            with col_siguiente:
+          columnas_tabla = st.columns([1.3, 2.3, 1.7, 1.7, 1.7, 1.7, 1.2])
 
-                if st.button(
-                    "Siguiente →",
-                    disabled=pagina_actual >= total_paginas,
-                    key="pagina_siguiente"
-                ):
+          encabezados = [
+              "ID",
+              "Nombre",
+              "Celular",
+              "Tipo de piel",
+              "Tono de base",
+              "Ciudad",
+              "Acción"
+          ]
 
-                    st.session_state.pagina_clientes += 1
-                    st.rerun()
+          for columna, encabezado in zip(
+              columnas_tabla,
+              encabezados
+          ):
 
-        else:
+              columna.markdown(
+                  f"**{encabezado}**"
+              )
 
-            st.info(
-                "No se encontraron clientes con "
-                "los filtros seleccionados."
-            )
+          st.divider()
 
-# ========================================================
-#  FICHA LATERAL
-# ========================================================
+# ------------------------------------------------
+# FILAS
+# ------------------------------------------------
+
+          for _, fila in df_pagina.iterrows():
+
+              columnas = st.columns(
+                  [
+                      1.3,
+                      2.3,
+                      1.7,
+                      1.7,
+                      1.7,
+                      1.7,
+                      1.2
+                  ]
+              )
+
+              cliente_id = fila["cliente_id"]
+
+              nombre = (
+                  "Sin nombre"
+                  if pd.isna(fila["nombre"])
+                  else str(fila["nombre"])
+              )
+
+              celular = (
+                  "Sin información"
+                  if pd.isna(fila["celular"])
+                  else str(fila["celular"])
+              )
+
+              tipo_piel = (
+                  "Sin información"
+                  if pd.isna(fila["tipo_piel"])
+                  else str(fila["tipo_piel"])
+              )
+
+              tono_base = (
+                  "Sin información"
+                  if pd.isna(fila["tono_base"])
+                  else str(fila["tono_base"])
+              )
+
+              ciudad = (
+                  "Sin información"
+                  if pd.isna(fila["ciudad"])
+                  else str(fila["ciudad"])
+              )
+
+              columnas[0].write(cliente_id)
+              columnas[1].write(nombre)
+              columnas[2].write(celular)
+              columnas[3].write(tipo_piel)
+              columnas[4].write(tono_base)
+              columnas[5].write(ciudad)
+
+              if columnas[6].button("Ver ficha",key=f"ver_{cliente_id}"):
+
+                  st.session_state[
+                      "cliente_seleccionado_id"
+                  ] = cliente_id
+
+                  st.rerun()
+
+              st.divider()
+
+# ------------------------------------------------
+# PAGINACIÓN
+# ------------------------------------------------
+
+          col_anterior, col_pagina, col_siguiente = (st.columns([1, 2, 1]))
+
+          with col_anterior:
+
+              if st.button(
+                  "← Anterior",
+                  disabled=pagina_actual <= 1,
+                  key="pagina_anterior"
+              ):
+
+                  st.session_state.pagina_clientes -= 1
+                  st.rerun()
+
+          with col_pagina:
+
+              st.markdown(
+                  f"""
+                  <div style="text-align:center;">
+                      Página {pagina_actual}
+                      de {total_paginas}
+                  </div>
+                  """,
+                  unsafe_allow_html=True
+              )
+
+          with col_siguiente:
+
+              if st.button(
+                  "Siguiente →",
+                  disabled=pagina_actual >= total_paginas,
+                  key="pagina_siguiente"
+              ):
+
+                  st.session_state.pagina_clientes += 1
+                  st.rerun()
+
+      else:
+
+          st.info(
+              "No se encontraron clientes con "
+              "los filtros seleccionados."
+          )
+
+    
+# =========================================================
+# FICHA CLIENTE + ASISTENTE
+# =========================================================
+
     with col_ficha:
+   
+      if "cliente_seleccionado_id" in st.session_state:
 
-        if "cliente_seleccionado_id" in st.session_state:
+          cliente_id = st.session_state["cliente_seleccionado_id"]
 
-            cliente_id = st.session_state[
-                "cliente_seleccionado_id"
-            ]
+          cliente_df = df[df["cliente_id"] == cliente_id]
 
-            cliente_df = df[
-                df["cliente_id"] == cliente_id
-            ]
+          if not cliente_df.empty:
 
-            if not cliente_df.empty:
+            cliente = cliente_df.iloc[0]
 
-                cliente = cliente_df.iloc[0]
+            # =================================================
+            # DATOS BÁSICOS
+            # =================================================
 
-                # =================================================
-                # DATOS BÁSICOS
-                # =================================================
+            nombre = (
+                "Sin nombre"
+                if pd.isna(cliente["nombre"])
+                else str(cliente["nombre"])
+            )
 
-                nombre = (
-                    "Sin nombre"
-                    if pd.isna(cliente["nombre"])
-                    else str(cliente["nombre"])
-                )
+            celular = formatear_celular(
+                cliente["celular"]
+            )
 
-                celular = formatear_celular(
-                    cliente["celular"]
-                )
+            if not celular:
+                celular = "Sin información"
 
-                if not celular:
-                    celular = "Sin información"
+            ciudad = (
+                "Sin información"
+                if pd.isna(cliente["ciudad"])
+                else str(cliente["ciudad"])
+            )
 
-                ciudad = (
-                    "Sin información"
-                    if pd.isna(cliente["ciudad"])
-                    else str(cliente["ciudad"])
-                )
+            tipo_piel = (
+                "Sin información"
+                if pd.isna(cliente["tipo_piel"])
+                else str(cliente["tipo_piel"])
+            )
 
-                tipo_piel = (
-                    "Sin información"
-                    if pd.isna(cliente["tipo_piel"])
-                    else str(cliente["tipo_piel"])
-                )
+            tono_base = (
+                "Sin información"
+                if pd.isna(cliente["tono_base"])
+                else str(cliente["tono_base"])
+            )
 
-                tono_base = (
-                    "Sin información"
-                    if pd.isna(cliente["tono_base"])
-                    else str(cliente["tono_base"])
-                )
+              # =================================================
+              # CAMPOS FALTANTES
+              # =================================================
 
-                # =================================================
-                # CAMPOS FALTANTES
-                # =================================================
+            campos_faltantes = []
 
-                campos_faltantes = []
+            campos_obligatorios = {
+                "tipo_piel": "Tipo de piel",
+                "tono_base": "Tono de base",
+                "ciudad": "Ciudad"
+            }
 
-                campos_obligatorios = {
-                    "tipo_piel": "Tipo de piel",
-                    "tono_base": "Tono de base",
-                    "ciudad": "Ciudad"
-                }
+            for campo, nombre_campo in (
+                campos_obligatorios.items()
+            ):
 
-                for campo, nombre_campo in (
-                    campos_obligatorios.items()
+                valor = cliente[campo]
+
+                if (
+                    pd.isna(valor)
+                    or str(valor).strip() == ""
+                    or str(valor).lower() == "nan"
                 ):
 
-                    valor = cliente[campo]
-
-                    if (
-                        pd.isna(valor)
-                        or str(valor).strip() == ""
-                        or str(valor).lower() == "nan"
-                    ):
-
-                        campos_faltantes.append(
-                            nombre_campo
-                        )
-
-                perfil_completo = (
-                    len(campos_faltantes) == 0
-                )
-
-                # =================================================
-                # CONTENEDOR PRINCIPAL
-                # =================================================
-
-                with st.container(border=True):
-
-                    # -------------------------------------------------
-                    # CABECERA
-                    # -------------------------------------------------
-
-                    col_titulo, col_cerrar = st.columns(
-                        [4, 1]
+                    campos_faltantes.append(
+                        nombre_campo
                     )
 
-                    with col_titulo:
-
-                        st.markdown(
-                            "### 👤 Ficha del cliente"
-                        )
-
-                        st.markdown(
-                            f"## {nombre}"
-                        )
-
-                        st.caption(
-                            f"ID: {cliente_id}"
-                        )
-
-                    with col_cerrar:
-
-                        if st.button(
-                            "✕",
-                            key=f"cerrar_{cliente_id}",
-                            help="Cerrar ficha"
-                        ):
-
-                            del st.session_state[
-                                "cliente_seleccionado_id"
-                            ]
-
-                            st.rerun()
-
-                    # -------------------------------------------------
-                    # ESTADO
-                    # -------------------------------------------------
-
-                    if perfil_completo:
-
-                        st.success(
-                            "✓ Perfil completo"
-                        )
-
-                    else:
-
-                        st.warning(
-                            "⚠ Perfil incompleto"
-                        )
-
-                        st.caption(
-                            "Falta: "
-                            + ", ".join(
-                                campos_faltantes
-                            )
-                        )
-
-                    st.divider()
-
-                    # -------------------------------------------------
-                    # INFORMACIÓN DE CONTACTO
-                    # -------------------------------------------------
-
-                    st.markdown(
-                        "#### Información de contacto"
-                    )
-
-                    col_dato1, col_dato2 = st.columns(2)
-
-                    with col_dato1:
-
-                        st.caption("Celular")
-
-                        st.write(
-                            f"📞 {celular}"
-                        )
-
-                    with col_dato2:
-
-                        st.caption("Ciudad")
-
-                        st.write(
-                            f"📍 {ciudad}"
-                        )
-
-                    # -------------------------------------------------
-                    # CARACTERÍSTICAS
-                    # -------------------------------------------------
-
-                    st.markdown(
-                        "#### Características"
-                    )
-
-                    col_dato1, col_dato2 = st.columns(2)
-
-                    with col_dato1:
-
-                        st.caption(
-                            "Tipo de piel"
-                        )
-
-                        st.write(
-                            tipo_piel
-                        )
-
-                    with col_dato2:
-
-                        st.caption(
-                            "Tono de base"
-                        )
-
-                        st.write(
-                            tono_base
-                        )
-
-                    # -------------------------------------------------
-                    # ASISTENTE
-                    # -------------------------------------------------
-
-                    st.divider()
-
-                    st.markdown(
-                        "#### 🤖 Asistente Inteligente"
-                    )
-
-                    resultado_asistente = (
-                        analizar_perfil(cliente)
-                    )
-
-                    for observacion in (
-                        resultado_asistente[
-                            "observaciones"
-                        ]
-                    ):
-
-                        st.write(
-                            f"• {observacion}"
-                        )
-
-                    if resultado_asistente[
-                        "acciones"
-                    ]:
-
-                        st.markdown(
-                            "**Acciones sugeridas**"
-                        )
-
-                        for accion in (
-                            resultado_asistente[
-                                "acciones"
-                            ]
-                        ):
-
-                            st.write(
-                                f"• {accion}"
-                            )
-
-                    # -------------------------------------------------
-                    # EDICIÓN
-                    # -------------------------------------------------
-
-                    st.divider()
-
-                    editar = st.toggle(
-                        "Editar información",
-                        key=f"editar_{cliente_id}"
-                    )
-
-                    if editar:
-
-                        with st.form(
-                            f"formulario_cliente_{cliente_id}"
-                        ):
-
-                            st.markdown(
-                                "#### Actualizar perfil"
-                            )
-
-                            nombre_editado = (
-                                st.text_input(
-                                    "Nombre",
-                                    value=(
-                                        ""
-                                        if pd.isna(
-                                            cliente["nombre"]
-                                        )
-                                        else str(
-                                            cliente["nombre"]
-                                        )
-                                    )
-                                )
-                            )
-
-                            celular_editado = (
-                                st.text_input(
-                                    "Celular",
-                                    value=(
-                                        ""
-                                        if pd.isna(
-                                            cliente["celular"]
-                                        )
-                                        else formatear_celular(
-                                            cliente["celular"]
-                                        )
-                                    )
-                                )
-                            )
-
-                            tipo_piel_editado = (
-                                st.text_input(
-                                    "Tipo de piel",
-                                    value=(
-                                        ""
-                                        if pd.isna(
-                                            cliente["tipo_piel"]
-                                        )
-                                        else str(
-                                            cliente["tipo_piel"]
-                                        )
-                                    )
-                                )
-                            )
-
-                            tono_base_editado = (
-                                st.text_input(
-                                    "Tono de base",
-                                    value=(
-                                        ""
-                                        if pd.isna(
-                                            cliente["tono_base"]
-                                        )
-                                        else str(
-                                            cliente["tono_base"]
-                                        )
-                                    )
-                                )
-                            )
-
-                            ciudad_editada = (
-                                st.text_input(
-                                    "Ciudad",
-                                    value=(
-                                        ""
-                                        if pd.isna(
-                                            cliente["ciudad"]
-                                        )
-                                        else str(
-                                            cliente["ciudad"]
-                                        )
-                                    )
-                                )
-                            )
-
-                            guardar = (
-                                st.form_submit_button(
-                                    "Guardar cambios",
-                                    type="primary"
-                                )
-                            )
-
-                            if guardar:
-
-                                actualizar_cliente(
-                                    cliente_id,
-                                    nombre_editado.strip(),
-                                    celular_editado.strip(),
-                                    tipo_piel_editado.strip(),
-                                    tono_base_editado.strip(),
-                                    ciudad_editada.strip()
-                                )
-
-                                st.success(
-                                    "Perfil actualizado correctamente."
-                                )
-
-                                st.rerun()
-
-                    # -------------------------------------------------
-                    # SEGUIMIENTO
-                    # -------------------------------------------------
-
-                    st.divider()
-
-                    st.markdown(
-                        "#### 📝 Seguimiento"
-                    )
-
-                    nota_cliente = st.text_area(
-                        "Nueva nota",
-                        placeholder=(
-                            "Ej. Se contactó a la cliente "
-                            "para consultar si necesita "
-                            "reposición."
-                        ),
-                        height=90,
-                        key=f"nota_{cliente_id}"
-                    )
-
-                    if st.button(
-                        "Guardar seguimiento",
-                        type="primary",
-                        key=f"guardar_{cliente_id}"
-                    ):
-
-                        if nota_cliente.strip():
-
-                            guardar_seguimiento(
-                                cliente_id,
-                                nota_cliente.strip()
-                            )
-
-                            st.success(
-                                "Seguimiento guardado correctamente."
-                            )
-
-                            st.rerun()
-
-                        else:
-
-                            st.warning(
-                                "Escribe una nota antes de guardar."
-                            )
-
-                    # -------------------------------------------------
-                    # HISTORIAL
-                    # -------------------------------------------------
-
-                    historial_cliente = (
-                        obtener_seguimientos(
-                            cliente_id
-                        )
-                    )
-
-                    if historial_cliente:
-
-                        st.markdown(
-                            "**Historial de seguimiento**"
-                        )
-
-                        for fecha, texto in (
-                            historial_cliente
-                        ):
-
-                            st.caption(
-                                fecha
-                            )
-
-                            st.write(
-                                texto
-                            )
-
-                            st.divider()
-
-                    else:
-
-                        st.info(
-                            "No hay seguimientos registrados."
-                        )
-
-        else:
-
-            # =========================================================
-            # PANEL VACÍO
-            # =========================================================
+            perfil_completo = (len(campos_faltantes) == 0)
+
+            # =================================================
+            # CONTENEDOR PRINCIPAL
+            # =================================================
 
             with st.container(border=True):
 
-                st.markdown(
-                    "### 👤 Ficha del cliente"
-                )
+              col_titulo, col_cerrar = st.columns( [4, 1])
 
-                st.markdown(
-                    """
-                    <div style="
-                        border-radius: 12px;
-                        background-color: #EEF2FF;
-                        padding:10px 10px;
-                        margin-bottom:20px
-                    ">
-                    <strong>
-                    Selecciona una cliente
-                    </strong>>
-                    Pulsa <strong>Ver ficha</strong>
-                    en cualquier cliente de la tabla
-                    para consultar su información.
-                    """,
-                    unsafe_allow_html=True,
-                )
+              with col_titulo:
 
+                  st.markdown("### 👤 Ficha del cliente")
+
+                  st.markdown(f"## {nombre}")
+
+                  st.caption(f"ID: {cliente_id}")
+
+              with col_cerrar:
+
+                  if st.button("✕",
+                      key=f"cerrar_{cliente_id}",
+                      help="Cerrar ficha"
+                  ):
+                      del st.session_state[
+                          "cliente_seleccionado_id"
+                      ]
+
+                      st.rerun()
+
+              # -------------------------------------------------
+              # ESTADO
+              # -------------------------------------------------
+
+              if perfil_completo:
+                  st.success("✓ Perfil completo")
+              else:
+                  st.warning("⚠ Perfil incompleto")
+
+                  st.caption(
+                      "Falta: "
+                      + ", ".join(
+                          campos_faltantes
+                      )
+                  )
+
+              st.divider()
+
+              # -------------------------------------------------
+              # INFORMACIÓN DE CONTACTO
+              # -------------------------------------------------
+
+              st.markdown("#### Información de contacto")
+              
+              col_dato1, col_dato2 = st.columns(2)
+              
+              with col_dato1:
+
+                st.caption("Celular")
+                st.write(f"📞 {celular}")
+              
+              with col_dato2:
+
+                st.caption("Ciudad")
+                st.write(f"📍 {ciudad}")
+
+              # -------------------------------------------------
+              # CARACTERÍSTICAS
+              # -------------------------------------------------
+
+              st.markdown("#### Características")
+              
+              col_dato1, col_dato2 = st.columns(2)
+              
+              with col_dato1:
+
+                st.caption("Tipo de piel")
+                st.write(tipo_piel)
+
+              with col_dato2:
+                st.caption("Tono de base")
+                st.write(tono_base)
+
+          # ==========================================================
+          # ASISTENTE
+          # ==========================================================
+
+   
+              st.markdown("### 🤖 Asistente Inteligente")
+      
+              if "cliente_seleccionado_id" in st.session_state:
+      
+                  cliente_id_asistente = (st.session_state["cliente_seleccionado_id"])
+      
+                  cliente_df_asistente = df[df["cliente_id"] == cliente_id_asistente]
+      
+                  if not cliente_df_asistente.empty:
+      
+                      cliente_asistente = (cliente_df_asistente.iloc[0])
+      
+                      nombre_asistente = (
+                          cliente_asistente["nombre"]
+                          if pd.notna(cliente_asistente["nombre"])
+                          else "Cliente"
+                      )
+      
+                      st.caption(f"Cliente seleccionado: {nombre_asistente}")
+      
+                      resultado_asistente = analizar_perfil(cliente_asistente)
+      
+                      st.markdown(
+                          f"""
+                          <div class="assistant-status">
+                              <strong>
+                                  {resultado_asistente["estado"]}
+                              </strong>
+                          </div>
+                          """,
+                          unsafe_allow_html=True
+                      )
+      
+                      st.markdown("**📋 Interpretación del perfil**")
+      
+                      for observacion in resultado_asistente[
+                          "observaciones"
+                      ]:
+                          st.write(f"• {observacion}")
+      
+                      st.markdown("**💡 Oportunidad comercial**")
+      
+                      st.info(resultado_asistente["oportunidad"])
+      
+                      productos_recomendados = (
+                          resultado_asistente.get(
+                              "productos_recomendados",
+                              []
+                          )
+                      )
+      
+                      if productos_recomendados:
+      
+                          st.markdown( "**💄 Productos recomendados**")
+      
+                          for producto in productos_recomendados:
+      
+                              st.markdown(
+                                  f"**{producto['nombre']}**"
+                              )
+      
+                              st.caption(
+                                  f"{producto['categoria']} · "
+                                  f"{producto['beneficio']}"
+                              )
+      
+                              st.write(
+                                  f"✓ **{producto['nivel']}**"
+                              )
+      
+                              st.write(
+                                  producto["descripcion"]
+                              )
+      
+                              st.caption(
+                                  f"Motivo: {producto['motivo']}"
+                              )
+      
+                              st.divider()
+      
+                      else:
+      
+                          st.info(
+                              "No se encontraron productos "
+                              "compatibles en la base de "
+                              "conocimiento actual."
+                          )
+      
+                      st.markdown(
+                          "**🎯 Próxima acción recomendada**"
+                      )
+      
+                      st.success(
+                          resultado_asistente[
+                              "accion_recomendada"
+                          ]
+                      )
+      
+                      if resultado_asistente["acciones"]:
+      
+                          st.markdown(
+                              "**📌 Acciones sugeridas**"
+                          )
+      
+                          for accion in resultado_asistente[
+                              "acciones"
+                          ]:
+                              st.write(f"• {accion}")
+      
+                      else:
+          
+                          st.info(
+                              "No se encontró información "
+                              "del cliente seleccionado."
+                          )
+      
+              else:
+    
+                st.info(
+                    "Selecciona una cliente desde la tabla "
+                    "para activar el asistente."
+                )
+ 
+      else:
+
+        with st.container(border=True):
+
+            st.markdown(
+                "### 👤 Ficha del cliente"
+            )
+
+            st.markdown(
+                """Selecciona una cliente
+                <br>
+                Pulsa <strong>Ver ficha</strong>
+                en la tabla de clientes para
+                consultar su información.
+                """,
+                unsafe_allow_html=True
+            )
 # ============================================================
 # CLIENTES
 # ============================================================
@@ -1244,8 +1011,7 @@ elif opcion == "Clientes":
         df,
         use_container_width=True,
         hide_index=True,
-    )
-
+    )               
 
 # ============================================================
 # SEGMENTOS
@@ -2229,3 +1995,4 @@ elif opcion == "Seguimiento":
     else:
 
         st.info("No hay seguimientos registrados " "para este cliente.")
+           

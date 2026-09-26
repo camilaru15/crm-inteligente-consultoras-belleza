@@ -1,0 +1,13 @@
+producto_id,nombre,categoria,tipo_piel,tono_base,beneficio,descripcion
+PROD_001,Base Líquida Control Mate,Maquillaje,Grasa,N150,Control de brillo,Base de acabado mate pensada para ayudar a controlar el exceso de brillo.
+PROD_002,Base Líquida Hidratante,Maquillaje,Seca,N150,Hidratación,Aporta una sensación hidratante y un acabado natural.
+PROD_003,Base Líquida Acabado Natural,Maquillaje,Mixta,N150,Equilibrio,Acabado natural pensado para equilibrar zonas secas y grasas.
+PROD_004,Polvo Compacto Matificante,Maquillaje,Grasa,N150,Control de brillo,Polvo compacto orientado a reducir visualmente el brillo durante el día.
+PROD_005,Polvo Compacto Natural,Maquillaje,Seca,N150,Acabado uniforme,Polvo de acabado ligero para complementar el maquillaje.
+PROD_006,Corrector Alta Cobertura,Maquillaje,Grasa,N150,Cobertura,Corrector de cobertura para complementar la rutina de maquillaje.
+PROD_007,Corrector Acabado Natural,Maquillaje,Mixta,N150,Cobertura natural,Corrector de acabado natural para complementar el maquillaje.
+PROD_008,Base Líquida Control Mate,Maquillaje,Grasa,N120,Control de brillo,Base de acabado mate pensada para ayudar a controlar el exceso de brillo.
+PROD_009,Base Líquida Control Mate,Maquillaje,Grasa,N180,Control de brillo,Base de acabado mate pensada para ayudar a controlar el exceso de brillo.
+PROD_010,Base Líquida Hidratante,Maquillaje,Seca,N120,Hidratación,Aporta una sensación hidratante y un acabado natural.
+PROD_011,Base Líquida Hidratante,Maquillaje,Seca,N180,Hidratación,Aporta una sensación hidratante y un acabado natural.
+PROD_012,Primer Control Brillo,Preparación,Grasa,N150,Preparación de la piel,Producto de preparación orientado a reducir la apariencia del brillo antes del maquillaje.
