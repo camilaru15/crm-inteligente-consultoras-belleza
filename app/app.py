@@ -706,209 +706,312 @@ if opcion == "Inicio":
 
             with st.container(border=True):
 
-              col_titulo, col_cerrar = st.columns( [4, 1])
+                # -------------------------------------------------
+                # ESTADO DEL MODO EDICIÓN
+                # -------------------------------------------------
 
-              with col_titulo:
+                clave_edicion = f"modo_edicion_{cliente_id}"
 
-                  st.markdown("### 👤 Ficha del cliente")
+                if clave_edicion not in st.session_state:
+                    st.session_state[clave_edicion] = False
 
-                  st.markdown(f"## {nombre}")
+                # -------------------------------------------------
+                # CABECERA
+                # -------------------------------------------------
 
-                  st.caption(f"ID: {cliente_id}")
+                col_titulo, col_cerrar = st.columns([4, 1])
 
-              with col_cerrar:
+                with col_titulo:
 
-                  if st.button("✕",
-                      key=f"cerrar_{cliente_id}",
-                      help="Cerrar ficha"
-                  ):
-                      del st.session_state[
-                          "cliente_seleccionado_id"
-                      ]
+                    st.markdown("### 👤 Ficha del cliente")
+                    st.markdown(f"## {nombre}")
+                    st.caption(f"ID: {cliente_id}")
+                    
+                    # -------------------------------------------------
+                    # ESTADO DEL PERFIL
+                    # -------------------------------------------------
 
-                      st.rerun()
+                    if perfil_completo:
 
-              # -------------------------------------------------
-              # ESTADO
-              # -------------------------------------------------
+                        st.success("✓ Perfil completo")
 
-              if perfil_completo:
-                  st.success("✓ Perfil completo")
-              else:
-                  st.warning("⚠ Perfil incompleto")
+                    else:
 
-                  st.caption(
-                      "Falta: "
-                      + ", ".join(
-                          campos_faltantes
-                      )
-                  )
+                        st.warning("⚠ Perfil incompleto")
 
-              st.divider()
+                        st.caption(
+                            "Falta: "
+                            + ", ".join(campos_faltantes)
+                        )
 
-              # -------------------------------------------------
-              # INFORMACIÓN DE CONTACTO
-              # -------------------------------------------------
+                with col_cerrar:
 
-              st.markdown("#### Información de contacto")
-              
-              col_dato1, col_dato2 = st.columns(2)
-              
-              with col_dato1:
+                    if st.button(
+                        "✕",
+                        key=f"cerrar_{cliente_id}",
+                        help="Cerrar ficha"
+                    ):
+                        del st.session_state["cliente_seleccionado_id"]
 
-                st.caption("Celular")
-                st.write(f"📞 {celular}")
-              
-              with col_dato2:
+                        if clave_edicion in st.session_state:
+                            del st.session_state[clave_edicion]
 
-                st.caption("Ciudad")
-                st.write(f"📍 {ciudad}")
+                        st.rerun()
 
-              # -------------------------------------------------
-              # CARACTERÍSTICAS
-              # -------------------------------------------------
+                st.divider()
 
-              st.markdown("#### Características")
-              
-              col_dato1, col_dato2 = st.columns(2)
-              
-              with col_dato1:
+                # =================================================
+                # INFORMACIÓN DE CONTACTO + MODO EDICIÓN
+                # =================================================
 
-                st.caption("Tipo de piel")
-                st.write(tipo_piel)
+                col_contacto, col_edicion = st.columns([3.5, 1.1])
 
-              with col_dato2:
-                st.caption("Tono de base")
-                st.write(tono_base)
+                with col_contacto:
+
+                    st.markdown("#### Información de contacto")
+
+                with col_edicion:
+
+                    modo_edicion = st.toggle(
+                        "✏️",
+                        key=clave_edicion
+                    )
+
+                # =================================================
+                # MODO EDICIÓN
+                # =================================================
+
+                if modo_edicion:
+
+                    with st.form(
+                        key=f"form_editar_{cliente_id}"
+                    ):
+
+                        nombre_editar = st.text_input(
+                            "Nombre",
+                            value="" if pd.isna(cliente["nombre"])
+                            else str(cliente["nombre"])
+                        )
+
+                        celular_editar = st.text_input(
+                            "Celular",
+                            value="" if pd.isna(cliente["celular"])
+                            else str(cliente["celular"])
+                        )
+
+                        ciudad_editar = st.text_input(
+                            "Ciudad",
+                            value="" if pd.isna(cliente["ciudad"])
+                            else str(cliente["ciudad"])
+                        )
+
+                        tipo_piel_editar = st.text_input(
+                            "Tipo de piel",
+                            value="" if pd.isna(cliente["tipo_piel"])
+                            else str(cliente["tipo_piel"])
+                        )
+
+                        tono_base_editar = st.text_input(
+                            "Tono de base",
+                            value="" if pd.isna(cliente["tono_base"])
+                            else str(cliente["tono_base"])
+                        )
+
+                        st.divider()
+
+                        guardar_cambios = st.form_submit_button(
+                            "💾 Guardar cambios",
+                            use_container_width=True
+                        )
+
+                    if guardar_cambios:
+
+                        actualizar_cliente(
+                            cliente_id=cliente_id,
+                            nombre=nombre_editar,
+                            celular=celular_editar,
+                            tipo_piel=tipo_piel_editar,
+                            tono_base=tono_base_editar,
+                            ciudad=ciudad_editar
+                        )
+
+                        st.session_state[clave_edicion] = False
+
+                        st.success(
+                            "✓ Perfil actualizado correctamente"
+                        )
+
+                        st.rerun()
+
+                # =================================================
+                # MODO VISUALIZACIÓN
+                # =================================================
+
+                else:
+
+                    # -------------------------------------------------
+                    # INFORMACIÓN DE CONTACTO
+                    # -------------------------------------------------
+
+                    col_dato1, col_dato2 = st.columns(2)
+
+                    with col_dato1:
+
+                        st.caption("Celular")
+                        st.write(f"📞 {celular}")
+
+                    with col_dato2:
+
+                        st.caption("Ciudad")
+                        st.write(f"📍 {ciudad}")
+
+                    # -------------------------------------------------
+                    # CARACTERÍSTICAS
+                    # -------------------------------------------------
+
+                    st.markdown("#### Características")
+
+                    col_dato1, col_dato2 = st.columns(2)
+
+                    with col_dato1:
+
+                        st.caption("Tipo de piel")
+                        st.write(tipo_piel)
+
+                    with col_dato2:
+
+                        st.caption("Tono de base")
+                        st.write(tono_base)
+                
 
           # ==========================================================
           # ASISTENTE
           # ==========================================================
 
-   
-              st.markdown("### 🤖 Asistente Inteligente")
-      
-              if "cliente_seleccionado_id" in st.session_state:
-      
-                  cliente_id_asistente = (st.session_state["cliente_seleccionado_id"])
-      
-                  cliente_df_asistente = df[df["cliente_id"] == cliente_id_asistente]
-      
-                  if not cliente_df_asistente.empty:
-      
-                      cliente_asistente = (cliente_df_asistente.iloc[0])
-      
-                      nombre_asistente = (
-                          cliente_asistente["nombre"]
-                          if pd.notna(cliente_asistente["nombre"])
-                          else "Cliente"
-                      )
-      
-                      st.caption(f"Cliente seleccionado: {nombre_asistente}")
-      
-                      resultado_asistente = analizar_perfil(cliente_asistente)
-      
-                      st.markdown(
-                          f"""
-                          <div class="assistant-status">
-                              <strong>
-                                  {resultado_asistente["estado"]}
-                              </strong>
-                          </div>
-                          """,
-                          unsafe_allow_html=True
-                      )
-      
-                      st.markdown("**📋 Interpretación del perfil**")
-      
-                      for observacion in resultado_asistente[
-                          "observaciones"
-                      ]:
-                          st.write(f"• {observacion}")
-      
-                      st.markdown("**💡 Oportunidad comercial**")
-      
-                      st.info(resultado_asistente["oportunidad"])
-      
-                      productos_recomendados = (
-                          resultado_asistente.get(
-                              "productos_recomendados",
-                              []
-                          )
-                      )
-      
-                      if productos_recomendados:
-      
-                          st.markdown( "**💄 Productos recomendados**")
-      
-                          for producto in productos_recomendados:
-      
-                              st.markdown(
-                                  f"**{producto['nombre']}**"
-                              )
-      
-                              st.caption(
-                                  f"{producto['categoria']} · "
-                                  f"{producto['beneficio']}"
-                              )
-      
-                              st.write(
-                                  f"✓ **{producto['nivel']}**"
-                              )
-      
-                              st.write(
-                                  producto["descripcion"]
-                              )
-      
-                              st.caption(
-                                  f"Motivo: {producto['motivo']}"
-                              )
-      
-                              st.divider()
-      
-                      else:
-      
-                          st.info(
-                              "No se encontraron productos "
-                              "compatibles en la base de "
-                              "conocimiento actual."
-                          )
-      
-                      st.markdown(
-                          "**🎯 Próxima acción recomendada**"
-                      )
-      
-                      st.success(
-                          resultado_asistente[
-                              "accion_recomendada"
-                          ]
-                      )
-      
-                      if resultado_asistente["acciones"]:
-      
-                          st.markdown(
-                              "**📌 Acciones sugeridas**"
-                          )
-      
-                          for accion in resultado_asistente[
-                              "acciones"
-                          ]:
-                              st.write(f"• {accion}")
-      
-                      else:
-          
-                          st.info(
-                              "No se encontró información "
-                              "del cliente seleccionado."
-                          )
-      
-              else:
+
+                st.markdown("### 🤖 Asistente Inteligente")
+        
+                if "cliente_seleccionado_id" in st.session_state:
+        
+                    cliente_id_asistente = (st.session_state["cliente_seleccionado_id"])
+        
+                    cliente_df_asistente = df[df["cliente_id"] == cliente_id_asistente]
+        
+                    if not cliente_df_asistente.empty:
+        
+                        cliente_asistente = (cliente_df_asistente.iloc[0])
+        
+                        nombre_asistente = (
+                            cliente_asistente["nombre"]
+                            if pd.notna(cliente_asistente["nombre"])
+                            else "Cliente"
+                        )
+        
+                        st.caption(f"Cliente seleccionado: {nombre_asistente}")
+        
+                        resultado_asistente = analizar_perfil(cliente_asistente)
+        
+                        st.markdown(
+                            f"""
+                            <div class="assistant-status">
+                                <strong>
+                                    {resultado_asistente["estado"]}
+                                </strong>
+                            </div>
+                            """,
+                            unsafe_allow_html=True
+                        )
+        
+                        st.markdown("**📋 Interpretación del perfil**")
+        
+                        for observacion in resultado_asistente[
+                            "observaciones"
+                        ]:
+                            st.write(f"• {observacion}")
+        
+                        st.markdown("**💡 Oportunidad comercial**")
+        
+                        st.info(resultado_asistente["oportunidad"])
+        
+                        productos_recomendados = (
+                            resultado_asistente.get(
+                                "productos_recomendados",
+                                []
+                            )
+                        )
+        
+                        if productos_recomendados:
+        
+                            st.markdown( "**💄 Productos recomendados**")
+        
+                            for producto in productos_recomendados:
+        
+                                st.markdown(
+                                    f"**{producto['nombre']}**"
+                                )
+        
+                                st.caption(
+                                    f"{producto['categoria']} · "
+                                    f"{producto['beneficio']}"
+                                )
+        
+                                st.write(
+                                    f"✓ **{producto['nivel']}**"
+                                )
+        
+                                st.write(
+                                    producto["descripcion"]
+                                )
+        
+                                st.caption(
+                                    f"Motivo: {producto['motivo']}"
+                                )
+        
+                                st.divider()
+        
+                        else:
+        
+                            st.info(
+                                "No se encontraron productos "
+                                "compatibles en la base de "
+                                "conocimiento actual."
+                            )
+        
+                        st.markdown(
+                            "**🎯 Próxima acción recomendada**"
+                        )
+        
+                        st.success(
+                            resultado_asistente[
+                                "accion_recomendada"
+                            ]
+                        )
+        
+                        if resultado_asistente["acciones"]:
+        
+                            st.markdown(
+                                "**📌 Acciones sugeridas**"
+                            )
+        
+                            for accion in resultado_asistente[
+                                "acciones"
+                            ]:
+                                st.write(f"• {accion}")
+        
+                        else:
+            
+                            st.info(
+                                "No se encontró información "
+                                "del cliente seleccionado."
+                            )
+        
+                else:
+        
+                    st.info(
+                        "Selecciona una cliente desde la tabla "
+                        "para activar el asistente."
+                    )
     
-                st.info(
-                    "Selecciona una cliente desde la tabla "
-                    "para activar el asistente."
-                )
- 
       else:
 
         with st.container(border=True):
