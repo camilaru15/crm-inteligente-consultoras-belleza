@@ -711,10 +711,7 @@ if opcion == "Inicio":
                 # -------------------------------------------------
 
                 clave_edicion = f"modo_edicion_{cliente_id}"
-
-                if clave_edicion not in st.session_state:
-                    st.session_state[clave_edicion] = False
-
+                clave_toggle = f"toggle_edicion_{cliente_id}"   
                 # -------------------------------------------------
                 # CABECERA
                 # -------------------------------------------------
@@ -774,7 +771,7 @@ if opcion == "Inicio":
 
                     modo_edicion = st.toggle(
                         "✏️",
-                        key=clave_edicion
+                    key=clave_toggle
                     )
 
                 # =================================================
@@ -834,8 +831,6 @@ if opcion == "Inicio":
                             tono_base=tono_base_editar,
                             ciudad=ciudad_editar
                         )
-
-                        st.session_state[clave_edicion] = False
 
                         st.success(
                             "✓ Perfil actualizado correctamente"
